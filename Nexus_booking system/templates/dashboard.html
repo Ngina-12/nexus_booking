@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en" class="user-role-{{ user.role }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a00e0;
+            --secondary: #8e2de2;
+            --success: #28a745;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fa;
+            color: var(--dark);
+            margin: 0;
+        }
+        
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 2rem 1rem;
+        }
+        
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .brand i {
+            margin-right: 10px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: rgba(74, 0, 224, 0.1);
+            color: var(--primary);
+        }
+        
+        .nav-item i {
+            margin-right: 12px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 1rem;
+            font-weight: 600;
+        }
+        
+        /* Room Cards */
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .room-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        .room-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .room-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .room-meta {
+            display: flex;
+            gap: 1rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+        
+        .room-meta span {
+            display: flex;
+            align-items: center;
+        }
+        
+        .room-meta i {
+            margin-right: 6px;
+            color: var(--primary);
+        }
+        
+        .room-body {
+            padding: 1.5rem;
+        }
+        
+        .price {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .booking-form .input-group {
+            margin-bottom: 1rem;
+        }
+        
+        .booking-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .booking-form input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .btn {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        /* Bookings Table */
+        .bookings-table {
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border-collapse: collapse;
+        }
+        
+        .bookings-table th, 
+        .bookings-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .bookings-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .status-confirmed {
+            background: #e6f7ee;
+            color: var(--success);
+        }
+        
+        .status-cancelled {
+            background: #f8d7da;
+            color: var(--danger);
+        }
+        
+        .cancel-booking {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .cancel-booking i {
+            margin-right: 5px;
+        }
+        
+        .booking-confirmed {
+            padding: 1rem;
+            text-align: center;
+            color: var(--success);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .booking-confirmed i {
+            margin-right: 8px;
+        }
+        
+        /* Alerts */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateX(120%);
+            transition: transform 0.3s;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .alert.show {
+            transform: translateX(0);
+        }
+        
+        .alert-success {
+            background: var(--success);
+        }
+        
+        .alert-error {
+            background: var(--danger);
+        }
+        
+        .close-alert {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            margin-left: 15px;
+            cursor: pointer;
+            padding: 0;
+        }
+        
+        /* Admin specific */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            padding: 1.5rem;
+            border-radius: 8px;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card h3 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+        }
+        
+        .stat-card h3 i {
+            margin-right: 8px;
+        }
+        
+        .stat-card p {
+            font-size: 1.5rem;
+            margin-bottom: 0;
+            font-weight: 600;
+        }
+        
+        .bg-purple { background: linear-gradient(45deg, var(--primary), var(--secondary)); }
+        .bg-green { background: linear-gradient(45deg, #00b09b, #96c93d); }
+        .bg-blue { background: linear-gradient(45deg, #4776E6, #8E54E9); }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="fas fa-hotel"></i> NEXUS
+            </div>
+            <nav>
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    My Bookings
+                </a>
+                {% if user.role == 'admin' %}
+                <a href="#" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    User Management
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    Analytics
+                </a>
+                {% endif %}
+                <a href="#" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+                <a href="/logout" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1>Welcome back, {{ user.username }}</h1>
+                <div class="user-profile">
+                    <span>{{ user.role|title }} Account</span>
+                    <div class="avatar">{{ user.username[0]|upper }}</div>
+                </div>
+            </div>
+
+            {% if user.role == 'admin' %}
+            <!-- Admin Stats -->
+            <div class="admin-stats">
+                <div class="stat-card bg-purple">
+                    <h3><i class="fas fa-users"></i> Total Users</h3>
+                    <p>{{ User.query.count() }}</p>
+                </div>
+                <div class="stat-card bg-green">
+                    <h3><i class="fas fa-bed"></i> Available Rooms</h3>
+                    <p>{{ Room.query.filter_by(is_available=True).count() }}</p>
+                </div>
+                <div class="stat-card bg-blue">
+                    <h3><i class="fas fa-calendar-check"></i> Active Bookings</h3>
+                    <p>{{ Booking.query.filter(Booking.check_out > now, Booking.status == 'confirmed').count() }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Available Rooms -->
+            <h2>Available Rooms</h2>
+            <div class="rooms-grid">
+                {% for room in rooms %}
+                <div class="room-card" data-room-id="{{ room.id }}" {% if not room.is_available %}data-booked="true"{% endif %}>
+                    <div class="room-header">
+                        <h3 class="room-title">{{ room.hotel.name }} - Room {{ room.room_number }}</h3>
+                        <div class="room-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> {{ room.hotel.location }}</span>
+                            <span><i class="fas fa-user-friends"></i> {{ room.room_type }} ({{ room.capacity }} guests)</span>
+                        </div>
+                    </div>
+                    <div class="room-body">
+                        <div class="price">${{ room.price_per_night }}/night</div>
+                        
+                        {% if room.is_available %}
+                        <form class="booking-form">
+                            <div class="input-group">
+                                <label>Check-in</label>
+                                <input type="date" name="check_in" required min="{{ now.strftime('%Y-%m-%d') }}">
+                            </div>
+                            <div class="input-group">
+                                <label>Check-out</label>
+                                <input type="date" name="check_out" required>
+                            </div>
+                            <button type="submit" class="btn">
+                                <i class="fas fa-bookmark"></i> Book Now
+                            </button>
+                        </form>
+                        {% else %}
+                        <div class="booking-confirmed">
+                            <i class="fas fa-check-circle"></i> Booked!
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <p>No rooms currently available</p>
+                {% endfor %}
+            </div>
+
+            <!-- Bookings Table -->
+            <h2>My Bookings</h2>
+            <table class="bookings-table">
+                <thead>
+                    <tr>
+                        <th>Hotel</th>
+                        <th>Room</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if bookings %}
+                        {% for booking in bookings %}
+                        <tr>
+                            <td>{{ booking.room.hotel.name }}</td>
+                            <td>{{ booking.room.room_number }}</td>
+                            <td>{{ booking.check_in.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ booking.check_out.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <span class="status-badge status-{{ booking.status }}">
+                                    {{ booking.status|title }}
+                                </span>
+                                {% if booking.status == 'confirmed' and (user.role == 'admin' or booking.user_id == user.id) %}
+                                <button class="cancel-booking" data-booking-id="{{ booking.id }}">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5">No bookings found</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </main>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set minimum checkout date when checkin changes
+        document.querySelectorAll('input[name="check_in"]').forEach(input => {
+            input.addEventListener('change', function() {
+                const form = this.closest('form');
+                const checkout = form.querySelector('input[name="check_out"]');
+                checkout.min = this.value;
+                
+                // If checkout is before new checkin, reset it
+                if (checkout.value && checkout.value < this.value) {
+                    checkout.value = '';
+                }
+            });
+        });
+
+        // Handle booking form submission
+        document.querySelectorAll('.booking-form').forEach(form => {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const roomCard = this.closest('.room-card');
+                const roomId = roomCard.dataset.roomId;
+                const checkIn = this.querySelector('[name="check_in"]').value;
+                const checkOut = this.querySelector('[name="check_out"]').value;
+                const button = this.querySelector('button');
+                
+                if (!checkIn || !checkOut) {
+                    showAlert('Please select both check-in and check-out dates', 'error');
+                    return;
+                }
+                
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                
+                try {
+                    const response = await fetch('/book-room', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            room_id: roomId,
+                            check_in: checkIn,
+                            check_out: checkOut
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Update UI
+                        roomCard.dataset.booked = "true";
+                        roomCard.querySelector('.booking-form').style.display = 'none';
+                        
+                        const confirmedDiv = document.createElement('div');
+                        confirmedDiv.className = 'booking-confirmed';
+                        confirmedDiv.innerHTML = '<i class="fas fa-check-circle"></i> Booked!';
+                        roomCard.querySelector('.room-body').appendChild(confirmedDiv);
+                        
+                        // Refresh bookings list
+                        loadBookings();
+                        
+                        showAlert(data.message, 'success');
+                    } else {
+                        showAlert(data.message, 'error');
+                    }
+                } catch (error) {
+                    showAlert('Network error. Please try again.', 'error');
+                } finally {
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-bookmark"></i> Book Now';
+                }
+            });
+        });
+
+        // Cancel booking handler
+        document.addEventListener('click', async function(e) {
+            if (e.target.classList.contains('cancel-booking') || 
+                e.target.closest('.cancel-booking')) {
+                
+                const button = e.target.classList.contains('cancel-booking') ? 
+                    e.target : e.target.closest('.cancel-booking');
+                
+                if (!confirm('Are you sure you want to cancel this booking?')) return;
+                
+                const bookingId = button.dataset.bookingId;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                button.disabled = true;
+                
+                try {
+                    const response = await fetch(`/cancel-booking/${bookingId}`, {
+                        method: 'POST'
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Refresh bookings list
+                        loadBookings();
+                        
+                        // If room becomes available, update its card
+                        const roomCard = document.querySelector(`.room-card[data-room-id="${data.room_id}"]`);
+                        if (roomCard) {
+                            roomCard.dataset.booked = "false";
+                            roomCard.querySelector('.booking-form').style.display = 'block';
+                            const confirmedDiv = roomCard.querySelector('.booking-confirmed');
+                            if (confirmedDiv) confirmedDiv.remove();
+                        }
+                        
+                        showAlert('Booking cancelled', 'success');
+                    } else {
+                        showAlert(data.message, 'error');
+                    }
+                } catch (error) {
+                    showAlert('Network error. Please try again.', 'error');
+                }
+            }
+        });
+
+        // Load bookings via AJAX
+        async function loadBookings() {
+            try {
+                const response = await fetch('/get-bookings');
+                const bookings = await response.json();
+                
+                const tbody = document.querySelector('.bookings-table tbody');
+                tbody.innerHTML = '';
+                
+                if (bookings.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5">No bookings found</td></tr>';
+                    return;
+                }
+                
+                bookings.forEach(booking => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${booking.hotel}</td>
+                        <td>${booking.room_number}</td>
+                        <td>${booking.check_in}</td>
+                        <td>${booking.check_out}</td>
+                        <td>
+                            <span class="status-badge status-${booking.status}">
+                                ${booking.status}
+                            </span>
+                            ${booking.can_cancel ? 
+                                `<button class="cancel-booking" data-booking-id="${booking.id}">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>` : ''
+                            }
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+            }
+        }
+
+        // Show alert message
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `
+                <span>${message}</span>
+                <button class="close-alert">&times;</button>
+            `;
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.classList.add('show');
+            }, 10);
+            
+            setTimeout(() => {
+                alert.classList.remove('show');
+                setTimeout(() => alert.remove(), 300);
+            }, 5000);
+            
+            alert.querySelector('.close-alert').addEventListener('click', () => {
+                alert.classList.remove('show');
+                setTimeout(() => alert.remove(), 300);
+            });
+        }
+    });
+    </script>
+</body>
+</html>
