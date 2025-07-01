@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus - Account Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a00e0;
+            --secondary: #8e2de2;
+            --bg-gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --card-bg: rgba(255, 255, 255, 0.1);
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        .settings-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        .settings-tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 25px;
+        }
+        .tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            opacity: 1;
+            border-bottom: 3px solid white;
+            font-weight: 500;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            font-family: 'Poppins';
+        }
+        .btn {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--secondary);
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <h1><i class="fas fa-cog"></i> Account Settings</h1>
+        <form method="POST">
+            <div class="settings-tabs">
+                <div class="tab active" onclick="switchTab('profile', event)">Profile</div>
+                <div class="tab" onclick="switchTab('security', event)">Security</div>
+                <div class="tab" onclick="switchTab('notifications', event)">Notifications</div>
+            </div>
+            <!-- Profile Tab -->
+            <div id="profile-tab" class="tab-content">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="fullname" name="fullname" value="{{ user.username }}">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" name="email" value="{{ user.email }}">
+                </div>
+                <!-- Placeholder for phone if you add it in DB -->
+                <!-- <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="phone" name="phone" value="">
+                </div> -->
+                <button class="btn" type="submit">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+            <!-- Security Tab (Hidden by default) -->
+            <div id="security-tab" class="tab-content" style="display:none">
+                <div class="form-group">
+                    <label>Change Password (coming soon)</label>
+                    <input type="password" id="current-password" placeholder="Current Password" disabled>
+                    <input type="password" id="new-password" placeholder="New Password" style="margin-top:10px" disabled>
+                    <input type="password" id="confirm-password" placeholder="Confirm Password" style="margin-top:10px" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Two-Factor Authentication (coming soon)</label>
+                    <div style="display:flex; align-items:center; gap:15px">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="2fa-toggle" disabled>
+                            <span class="slider"></span>
+                        </label>
+                        <span>Enable 2FA</span>
+                    </div>
+                </div>
+                <button class="btn" type="button" disabled>
+                    <i class="fas fa-lock"></i> Update Security
+                </button>
+            </div>
+            <!-- Notifications Tab (Hidden by default) -->
+            <div id="notifications-tab" class="tab-content" style="display:none">
+                <div class="form-group">
+                    <label>Email Notifications (coming soon)</label>
+                    <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="email-notifications" checked disabled>
+                            <span class="slider"></span>
+                        </label>
+                        <span>Receive booking confirmations</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:15px">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="promo-emails" checked disabled>
+                            <span class="slider"></span>
+                        </label>
+                        <span>Receive promotional offers</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Push Notifications (coming soon)</label>
+                    <select id="notification-frequency" disabled>
+                        <option value="instant">Instant</option>
+                        <option value="daily" selected>Daily Digest</option>
+                        <option value="none">None</option>
+                    </select>
+                </div>
+                <button class="btn" type="button" disabled>
+                    <i class="fas fa-bell"></i> Save Preferences
+                </button>
+            </div>
+        </form>
+    </div>
+    <script>
+        // Tab switching
+        function switchTab(tabName, event) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            // Show selected tab
+            document.getElementById(`${tabName}-tab`).style.display = 'block';
+            // Update active tab styling
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>

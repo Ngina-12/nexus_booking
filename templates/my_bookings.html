@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Bookings - NEXUS</title>
+</head>
+<body>
+    <h1>My Bookings</h1>
+    {% if bookings %}
+    <ul>
+        {% for booking in bookings %}
+        <li>{{ booking }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>You have no bookings.</p>
+    {% endif %}
+    <a href="/dashboard">Back to Dashboard</a>
+</body>
+</html>
